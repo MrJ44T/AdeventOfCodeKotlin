@@ -1,0 +1,118 @@
+fun main() {
+    val input = File("file/input.txt").readLines()
+    val ans1 = part1(input)
+    println(ans1)
+
+    val numberStrForm = listOf("one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
+    val ans2 = part2(input, numberStrForm)
+    println(ans2)
+}
+
+private fun part1(input: List<String>) = input
+    .map { line ->
+        var first = -1
+        var second = -1
+        line.forEach { ch ->
+            if (ch.isDigit()) {
+                if (first == -1) first = ch.digitToInt()
+                second = ch.digitToInt()
+            }
+        }
+        first * 10 + second
+    }
+    .sumOf {
+        it
+    }
+
+private fun part2(input: List<String>, numberStrForm: List<String>) = input
+    .map { line ->
+        var first = -1
+        var second = -1
+        for (index in line.indices) {
+            if (line[index].isDigit()) {
+                if (first == -1) first = line[index].toString().convertItToInt()
+                second = line[index].toString().convertItToInt()
+                continue
+            }
+            val match = numberStrForm.find { prefix -> line.substring(index).startsWith(prefix) }
+            if (match != null){
+                if (first == -1) first = match.convertItToInt()
+                second = match.convertItToInt()
+            }
+        }
+        first * 10 + second
+    }
+    .sumOf {
+        it
+    }
+
+private fun String.convertItToInt(): Int = when (this) {
+    "one" -> 1
+    "two" -> 2
+    "three" -> 3
+    "four" -> 4
+    "five" -> 5
+    "six" -> 6
+    "seven" -> 7
+    "eight" -> 8
+    "nine" -> 9
+    else -> this.toInt()
+}
+
+// another solution for part2
+fun main() {
+    val input = File("file/input.txt").readLines()
+    val ans1 = part1(input)
+    println(ans1)
+
+    val numberStrForm = listOf("1", "2", "3", "4", "5" ,"6", "7", "8", "9",
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
+    val ans2 = part2(input, numberStrForm)
+    println(ans2)
+}
+
+private fun part1(input: List<String>) = input
+    .map { line ->
+        var first = -1
+        var second = -1
+        line.forEach { ch ->
+            if (ch.isDigit()) {
+                if (first == -1) first = ch.digitToInt()
+                second = ch.digitToInt()
+            }
+        }
+        first * 10 + second
+    }
+    .sumOf {
+        it
+    }
+
+private fun part2(input: List<String>, numberStrForm: List<String>) = input
+    .map { line ->
+        var first = -1
+        var second = -1
+        for (index in line.indices) {
+            val match = numberStrForm.find { prefix -> line.substring(index).startsWith(prefix) }
+            if (match != null){
+                if (first == -1) first = match.convertItToInt()
+                second = match.convertItToInt()
+            }
+        }
+        first * 10 + second
+    }
+    .sumOf {
+        it
+    }
+
+private fun String.convertItToInt(): Int = when (this) {
+    "one" -> 1
+    "two" -> 2
+    "three" -> 3
+    "four" -> 4
+    "five" -> 5
+    "six" -> 6
+    "seven" -> 7
+    "eight" -> 8
+    "nine" -> 9
+    else -> this.toInt()
+}
