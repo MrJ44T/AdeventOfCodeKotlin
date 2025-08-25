@@ -1,0 +1,81 @@
+// First solution
+fun main() {
+    val input = File("file/input.txt").readLines()
+    val ans1 = input
+        .map { line ->
+            val greenRegex = Regex("""\d+\s+green""")
+            val redRegex = Regex("""\d+\s+red""")
+            val blueRegex = Regex("""\d+\s+blue""")
+            val id = line.substringAfter("Game").substringBefore(":").trim().toInt()
+            val list = line.substringAfter(":").split(";").map { it.split(",") }.flatten()
+            var isValid = true
+            for (str in list) {
+                when {
+                    greenRegex.matches(str.trim()) -> {
+                        val amount = str.substringBefore("green").trim().toInt()
+                        if (amount > 13) {
+                            isValid = false
+                            break
+                        }
+                    }
+
+                    redRegex.matches(str.trim()) -> {
+                        val amount = str.substringBefore("red").trim().toInt()
+                        if (amount > 12) {
+                            isValid = false
+                            break
+                        }
+                    }
+
+                    blueRegex.matches(str.trim()) -> {
+                        val amount = str.substringBefore("blue").trim().toInt()
+                        if (amount > 14) {
+                            isValid = false
+                            break
+                        }
+                    }
+
+                    else -> throw IllegalStateException()
+                }
+            }
+            if (isValid) id else 0
+        }
+        .sumOf { it }
+
+    val ans2 = input
+        .map { line ->
+            val greenRegex = Regex("""\d+\s+green""")
+            val redRegex = Regex("""\d+\s+red""")
+            val blueRegex = Regex("""\d+\s+blue""")
+            var greenMx = 0
+            var redMx = 0
+            var blueMx = 0
+            val id = line.substringAfter("Game").substringBefore(":").trim().toInt()
+            val list = line.substringAfter(":").split(";").map { it.split(",") }.flatten()
+            for (str in list) {
+                when {
+                    greenRegex.matches(str.trim()) -> {
+                        val amount = str.substringBefore("green").trim().toInt()
+                        if (greenMx < amount) greenMx = amount
+                    }
+
+                    redRegex.matches(str.trim()) -> {
+                        val amount = str.substringBefore("red").trim().toInt()
+                        if (redMx < amount) redMx = amount
+                    }
+
+                    blueRegex.matches(str.trim()) -> {
+                        val amount = str.substringBefore("blue").trim().toInt()
+                        if (blueMx < amount) blueMx = amount
+                    }
+
+                    else -> throw IllegalStateException()
+                }
+            }
+            greenMx * redMx * blueMx
+        }
+        .sumOf { it }
+
+    println(ans1)
+    println(ans2)
+}
