@@ -1,1 +1,58 @@
-Day8
+data class Point(
+    val x : Int,
+    val y : Int
+)
+
+fun main() {
+    val input = File("file/input.txt").readLines()
+    val rowLen = input.size
+    val colLen = input[0].length
+    val set = mutableSetOf<Point>()
+
+    val charListPointMap = input
+        .flatMapIndexed { row, str ->
+            str.mapIndexed { col, char ->
+                char to Point(x = row, y = col)
+            }
+        }
+        .filter { it.first != '.' }
+        .groupBy({it.first}, {it.second})
+
+    charListPointMap.forEach {
+        val list = it.value
+        for (i in list.indices) {
+            for (j in i + 1 until list.size) {
+                set.addAll(list[i].anotherTwoValidPoints(list[j], rowLen, colLen))
+            }
+        }
+    }
+    println(set.size)
+}
+
+fun Point.anotherTwoValidPoints(other: Point, rowLen: Int, colLen: Int): List<Point> {
+    val x = other.x - this.x
+    val y = other.y - this.y
+    val list = mutableListOf<Point>()
+    val nPoint1 = validPointOrNull(x, y, this, other, '-', rowLen, colLen)
+    val nPoint2 = validPointOrNull(x, y, this, other, '+', rowLen, colLen)
+    val nPoint3 = validPointOrNull(x, y, other, this, '-', rowLen, colLen)
+    val nPoint4 = validPointOrNull(x, y, other, this, '+', rowLen, colLen)
+    if (nPoint1 != null) list.add(nPoint1)
+    if (nPoint2 != null) list.add(nPoint2)
+    if (nPoint3 != null) list.add(nPoint3)
+    if (nPoint4 != null) list.add(nPoint4)
+
+    return list
+}
+
+fun validPointOrNull(x: Int, y: Int, point1: Point, point2: Point, op: Char, rowLen: Int, colLen: Int): Point? {
+    val nx = if (op == '-') point1.x - x else point1.x + x
+    val ny = if (op == '-') point1.y - y else point1.y + y
+    val nPoint = Point(x = nx, y = ny)
+    if (nPoint != point1 && nPoint != point2 && nPoint.isValid(rowLen, colLen)) return nPoint
+    return null
+}
+
+fun Point.isValid(rowLen: Int, colLen: Int): Boolean {
+    return this.x >= 0 && this.y >= 0 && this.x < rowLen && this.y < colLen
+}
